@@ -20,7 +20,7 @@ body {
     overflow: hidden;
 }
 
-header {
+.header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 30px;
@@ -186,6 +186,80 @@ header p {
     max-width: 80%;
 }
 
+/* 静态版本特定样式 */
+.input-section {
+    padding: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.preview-section {
+    padding: 30px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.preview-section h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.placeholder {
+    text-align: center;
+    color: #999;
+    font-size: 1.1em;
+}
+
+.poster {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+}
+
 /* 动画效果 */
 @keyframes pulse {
     0% { transform: scale(1); }
@@ -225,6 +299,9 @@ header p {
 /* 颜色主题 */
 .gradient-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 .gradient-purple { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.gradient-green { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.gradient-orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.gradient-red { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
 .gradient-sunset { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
 .gradient-forest { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
 .gradient-ocean { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }

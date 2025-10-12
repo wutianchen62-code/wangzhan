@@ -52,6 +52,7 @@ class PosterGenerator {
     generateStaticPoster(title, content, animation, color) {
         const animationCSS = this.getAnimationCSS(animation);
         const colorCSS = this.getColorCSS(color);
+        const keyframesCSS = this.getKeyframesCSS(animation);
 
         return `
             <div class="poster ${color} ${animation}" style="${colorCSS}">
@@ -61,6 +62,7 @@ class PosterGenerator {
                 </div>
                 <style>
                     .poster { ${animationCSS} }
+                    ${keyframesCSS}
                 </style>
             </div>
         `;
@@ -82,10 +84,137 @@ class PosterGenerator {
             `,
             'rotate': `
                 animation: rotate 4s linear infinite;
+            `,
+            'wave': `
+                animation: wave 2s ease-in-out infinite;
+            `,
+            'spiral': `
+                animation: spiral 3s ease-out forwards;
+            `,
+            'multi': `
+                animation: multi 2s ease;
+            `,
+            'rotate3d': `
+                animation: rotate3d 4s linear infinite;
             `
         };
 
         return animations[animation] || animations['pulse'];
+    }
+
+    getKeyframesCSS(animation) {
+        const keyframes = {
+            'pulse': `
+                @keyframes pulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+            `,
+            'bounce': `
+                @keyframes bounce {
+                    0%, 20%, 53%, 80%, 100% { 
+                        transform: translate3d(0,0,0); 
+                    }
+                    40%, 43% { 
+                        transform: translate3d(0,-30px,0); 
+                    }
+                    70% { 
+                        transform: translate3d(0,-15px,0); 
+                    }
+                    90% { 
+                        transform: translate3d(0,-4px,0); 
+                    }
+                }
+            `,
+            'fade': `
+                @keyframes fade {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+            `,
+            'slide': `
+                @keyframes slide {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(0); }
+                }
+            `,
+            'rotate': `
+                @keyframes rotate {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `,
+            'wave': `
+                @keyframes wave {
+                    0% { transform: translateY(0px) rotate(0deg); }
+                    25% { transform: translateY(-10px) rotate(5deg); }
+                    50% { transform: translateY(0px) rotate(0deg); }
+                    75% { transform: translateY(5px) rotate(-5deg); }
+                    100% { transform: translateY(0px) rotate(0deg); }
+                }
+            `,
+            'spiral': `
+                @keyframes spiral {
+                    0% { 
+                        transform: translate(0, 0) rotate(0deg) scale(0.5); 
+                        opacity: 0; 
+                    }
+                    50% { 
+                        transform: translate(50px, -50px) rotate(180deg) scale(1.2); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(100px, -100px) rotate(360deg) scale(1); 
+                        opacity: 0.8; 
+                    }
+                }
+            `,
+            'multi': `
+                @keyframes multi {
+                    0% { 
+                        transform: translateY(0) scale(1); 
+                        opacity: 1; 
+                    }
+                    25% { 
+                        transform: translateY(-20px) scale(1.1); 
+                        opacity: 0.8; 
+                    }
+                    50% { 
+                        transform: translateY(0) scale(1); 
+                        opacity: 1; 
+                    }
+                    75% { 
+                        transform: translateY(10px) scale(0.9); 
+                        opacity: 0.8; 
+                    }
+                    100% { 
+                        transform: translateY(0) scale(1); 
+                        opacity: 1; 
+                    }
+                }
+            `,
+            'rotate3d': `
+                @keyframes rotate3d {
+                    0% { 
+                        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); 
+                    }
+                    25% { 
+                        transform: perspective(1000px) rotateX(90deg) rotateY(90deg) rotateZ(45deg); 
+                    }
+                    50% { 
+                        transform: perspective(1000px) rotateX(180deg) rotateY(180deg) rotateZ(90deg); 
+                    }
+                    75% { 
+                        transform: perspective(1000px) rotateX(270deg) rotateY(270deg) rotateZ(135deg); 
+                    }
+                    100% { 
+                        transform: perspective(1000px) rotateX(360deg) rotateY(360deg) rotateZ(180deg); 
+                    }
+                }
+            `
+        };
+
+        return keyframes[animation] || keyframes['pulse'];
     }
 
     getColorCSS(color) {

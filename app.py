@@ -415,6 +415,110 @@ class PosterGenerator:
             """
         return ""
 
+    def is_complex_description(self, description):
+        """判断是否为复杂动画描述"""
+        complex_keywords = ['组合', '混合', '连续', '序列', '复杂', '高级', '多个', '交替', '随机', '波浪', '螺旋', '弹跳', '旋转']
+        return any(keyword in description for keyword in complex_keywords)
+
+    def generate_advanced_animation(self, description, keywords):
+        """生成高级动画效果"""
+        css_code = ""
+        
+        # 根据关键词生成复杂动画
+        if '波浪' in description or 'wave' in description.lower():
+            css_code += self.generate_wave_animation()
+        elif '螺旋' in description or 'spiral' in description.lower():
+            css_code += self.generate_spiral_animation()
+        elif '弹跳' in description or 'bounce' in description.lower():
+            css_code += self.generate_multi_bounce_animation()
+        elif '旋转' in description or 'rotate' in description.lower():
+            css_code += self.generate_3d_rotate_animation()
+        else:
+            # 默认复杂动画：组合效果
+            css_code += self.generate_combined_animation(keywords)
+        
+        return css_code
+
+    def generate_wave_animation(self):
+        """生成波浪动画"""
+        return """
+            @keyframes wave {
+                0% { transform: translateY(0px) rotate(0deg); }
+                25% { transform: translateY(-10px) rotate(5deg); }
+                50% { transform: translateY(0px) rotate(0deg); }
+                75% { transform: translateY(10px) rotate(-5deg); }
+                100% { transform: translateY(0px) rotate(0deg); }
+            }
+            .animation-wave {
+                animation: wave 2s ease-in-out infinite;
+            }
+        """
+
+    def generate_spiral_animation(self):
+        """生成螺旋动画"""
+        return """
+            @keyframes spiral {
+                0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+                50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+                100% { transform: rotate(360deg) scale(1); opacity: 1; }
+            }
+            .animation-spiral {
+                animation: spiral 3s ease-out forwards;
+            }
+        """
+
+    def generate_multi_bounce_animation(self):
+        """生成多重弹跳动画"""
+        return """
+            @keyframes multi-bounce {
+                0%, 20%, 40%, 60%, 80% { transform: translateY(0); }
+                10%, 30%, 50%, 70% { transform: translateY(-20px); }
+                90% { transform: translateY(-5px); }
+                100% { transform: translateY(0); }
+            }
+            .animation-multi-bounce {
+                animation: multi-bounce 2s ease-in-out infinite;
+            }
+        """
+
+    def generate_3d_rotate_animation(self):
+        """生成3D旋转动画"""
+        return """
+            @keyframes rotate3d {
+                0% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg); }
+                25% { transform: perspective(1000px) rotateX(90deg) rotateY(90deg); }
+                50% { transform: perspective(1000px) rotateX(180deg) rotateY(180deg); }
+                75% { transform: perspective(1000px) rotateX(270deg) rotateY(270deg); }
+                100% { transform: perspective(1000px) rotateX(360deg) rotateY(360deg); }
+            }
+            .animation-rotate3d {
+                animation: rotate3d 4s linear infinite;
+                transform-style: preserve-3d;
+            }
+        """
+
+    def generate_combined_animation(self, keywords):
+        """生成组合动画"""
+        css_code = ""
+        
+        # 根据关键词组合不同的动画效果
+        if 'fade' in keywords:
+            css_code += self.generate_keyframes('fade')
+        if 'slide' in keywords:
+            css_code += self.generate_keyframes('slide')
+        if 'rotate' in keywords:
+            css_code += self.generate_keyframes('rotate')
+        
+        # 生成组合动画类
+        css_code += """
+            .animation-combined {
+                animation: fade 2s ease-in-out, slide 2s ease-out, rotate 3s linear infinite;
+                animation-delay: 0s, 0.5s, 1s;
+            }
+        """
+        
+        return css_code
+
     def generate_decorations(self):
         """生成装饰元素"""
         decorations = ""
@@ -449,6 +553,10 @@ class PosterGenerator:
         
         # 根据关键词生成对应的动画代码
         animation_code = self.generate_custom_animation(keywords)
+        
+        # 如果检测到复杂描述，生成更高级的动画
+        if self.is_complex_description(description):
+            animation_code = self.generate_advanced_animation(description, keywords)
         
         return animation_code
 
@@ -527,47 +635,41 @@ class PosterGenerator:
 
     def generate_keyframes(self, movements):
         """根据运动类型生成关键帧"""
-        keyframes = []
         
-        # 基础关键帧
-        base_frames = {
-            0: {},
-            50: {},
-            100: {}
-        }
+        # 使用更灵活的关键帧生成方式
+        frames = {}
         
         for movement in movements:
             if movement == 'slide':
-                base_frames[0]['transform'] = 'translateX(-100px)'
-                base_frames[0]['opacity'] = '0'
-                base_frames[100]['transform'] = 'translateX(0)'
-                base_frames[100]['opacity'] = '1'
+                frames[0] = {'transform': 'translateX(-100px)', 'opacity': '0'}
+                frames[100] = {'transform': 'translateX(0)', 'opacity': '1'}
             elif movement == 'bounce':
-                base_frames[20]['transform'] = 'translateY(-10px)'
-                base_frames[40]['transform'] = 'translateY(0)'
-                base_frames[60]['transform'] = 'translateY(-5px)'
-                base_frames[80]['transform'] = 'translateY(0)'
+                # 弹跳动画需要多个关键帧
+                frames[0] = {'transform': 'translateY(0)'}
+                frames[20] = {'transform': 'translateY(-10px)'}
+                frames[40] = {'transform': 'translateY(0)'}
+                frames[60] = {'transform': 'translateY(-5px)'}
+                frames[80] = {'transform': 'translateY(0)'}
+                frames[100] = {'transform': 'translateY(0)'}
             elif movement == 'fade':
-                base_frames[0]['opacity'] = '0'
-                base_frames[100]['opacity'] = '1'
+                frames[0] = {'opacity': '0'}
+                frames[100] = {'opacity': '1'}
             elif movement == 'rotate':
-                base_frames[0]['transform'] = 'rotate(0deg)'
-                base_frames[100]['transform'] = 'rotate(360deg)'
+                frames[0] = {'transform': 'rotate(0deg)'}
+                frames[100] = {'transform': 'rotate(360deg)'}
             elif movement == 'scale':
-                base_frames[0]['transform'] = 'scale(0.5)'
-                base_frames[50]['transform'] = 'scale(1.2)'
-                base_frames[100]['transform'] = 'scale(1)'
+                frames[0] = {'transform': 'scale(0.5)'}
+                frames[50] = {'transform': 'scale(1.2)'}
+                frames[100] = {'transform': 'scale(1)'}
             elif movement == 'pulse':
-                base_frames[0]['transform'] = 'scale(1)'
-                base_frames[50]['transform'] = 'scale(1.1)'
-                base_frames[100]['transform'] = 'scale(1)'
+                frames[0] = {'transform': 'scale(1)'}
+                frames[50] = {'transform': 'scale(1.1)'}
+                frames[100] = {'transform': 'scale(1)'}
         
-        # 合并关键帧属性
-        frames = {}
-        for percentage, properties in base_frames.items():
-            if percentage not in frames:
-                frames[percentage] = {}
-            frames[percentage].update(properties)
+        # 如果没有找到匹配的运动类型，使用默认动画
+        if not frames:
+            frames[0] = {'opacity': '0', 'transform': 'scale(0.8)'}
+            frames[100] = {'opacity': '1', 'transform': 'scale(1)'}
         
         # 生成CSS代码
         css_lines = []
@@ -692,7 +794,19 @@ def get_suggestions():
                 '用创意点亮生活，让设计传递价值，成就您的品牌'
             ],
             'animations': ['pulse', 'bounce', 'fade', 'slide', 'rotate'],
-            'colors': ['gradient-blue', 'gradient-purple', 'gradient-sunset', 'gradient-forest', 'gradient-ocean']
+            'colors': ['gradient-blue', 'gradient-purple', 'gradient-sunset', 'gradient-forest', 'gradient-ocean'],
+            'animation_descriptions': [
+                '淡入淡出效果',
+                '弹跳动画',
+                '滑动效果',
+                '旋转动画',
+                '脉冲效果',
+                '波浪动画',
+                '螺旋动画',
+                '3D旋转效果',
+                '多重弹跳',
+                '组合动画效果'
+            ]
         }
         
         return jsonify({
@@ -705,6 +819,39 @@ def get_suggestions():
             'success': False,
             'error': str(e)
         })
+
+@app.route('/test_custom_animation')
+def test_custom_animation():
+    """测试自定义动画功能"""
+    generator = PosterGenerator()
+    
+    # 测试不同的动画描述
+    test_descriptions = [
+        '波浪动画效果',
+        '螺旋上升动画',
+        '弹跳效果',
+        '3D旋转动画',
+        '淡入淡出和滑动组合动画'
+    ]
+    
+    results = []
+    for description in test_descriptions:
+        animation_code = generator.coding_agent_generate_animation(description)
+        keywords = generator.analyze_animation_description(description)
+        is_complex = generator.is_complex_description(description)
+        
+        results.append({
+            'description': description,
+            'keywords': keywords,
+            'complex': is_complex,
+            'animation_code_length': len(animation_code)
+        })
+    
+    return jsonify({
+        'success': True,
+        'test_results': results,
+        'message': '自定义动画功能测试完成'
+    })
 
 if __name__ == '__main__':
     print("🎨 AI动态海报生成器启动中...")

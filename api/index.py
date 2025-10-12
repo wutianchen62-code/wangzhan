@@ -30,14 +30,35 @@ def api_generate_poster():
                 title, text, custom_animation, color_theme
             )
             
+            # 分析动画描述，获取更详细的动画信息
+             keywords = generator.analyze_animation_description(animation_description)
+             is_complex = generator.is_complex_description(animation_description)
+             
+             animation_info = {
+                 'type': 'custom',
+                 'name': '自定义动画',
+                 'keywords': keywords,
+                 'description': animation_description,
+                 'complex': is_complex,
+                 'animation_class': 'animation-custom'
+             }
+            
+            # 根据描述类型设置具体的动画类名
+            if '波浪' in animation_description or 'wave' in animation_description.lower():
+                animation_info['animation_class'] = 'animation-wave'
+            elif '螺旋' in animation_description or 'spiral' in animation_description.lower():
+                animation_info['animation_class'] = 'animation-spiral'
+            elif '弹跳' in animation_description or 'bounce' in animation_description.lower():
+                animation_info['animation_class'] = 'animation-multi-bounce'
+            elif '旋转' in animation_description or 'rotate' in animation_description.lower():
+                animation_info['animation_class'] = 'animation-rotate3d'
+            elif is_complex:
+                animation_info['animation_class'] = 'animation-combined'
+                
             return jsonify({
                 'success': True,
                 'poster_html': poster_html,
-                'animation_info': {
-                    'type': 'custom',
-                    'name': custom_animation['name'],
-                    'keywords': custom_animation['keywords']
-                }
+                'animation_info': animation_info
             })
         else:
             # 使用预设动画
@@ -48,7 +69,8 @@ def api_generate_poster():
                 'poster_html': poster_html,
                 'animation_info': {
                     'type': 'preset',
-                    'name': animation
+                    'name': animation,
+                    'animation_class': f'animation-{animation}' if animation != 'none' else ''
                 }
             })
             

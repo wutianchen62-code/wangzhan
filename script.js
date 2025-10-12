@@ -97,7 +97,16 @@ class PosterGenerator {
                 this.displayGeneratedPoster(result.poster_html);
                 let successMessage = '海报生成成功！';
                 if (result.animation_info) {
-                    successMessage += ` 动画类型：${result.animation_info.type}，名称：${result.animation_info.name}`;
+                    successMessage += ` 动画类型：${result.animation_info.type}`;
+                    if (result.animation_info.name) {
+                        successMessage += `，名称：${result.animation_info.name}`;
+                    }
+                    if (result.animation_info.keywords && result.animation_info.keywords.length > 0) {
+                        successMessage += `，关键词：${result.animation_info.keywords.join(', ')}`;
+                    }
+                    if (result.animation_info.complex) {
+                        successMessage += `，复杂动画：是`;
+                    }
                 }
                 this.showSuccessMessage(successMessage);
             } else {

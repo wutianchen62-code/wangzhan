@@ -31,29 +31,17 @@ def api_generate_poster():
             )
             
             # 分析动画描述，获取更详细的动画信息
-             keywords = generator.analyze_animation_description(animation_description)
-             is_complex = generator.is_complex_description(animation_description)
-             
-             animation_info = {
-                 'type': 'custom',
-                 'name': '自定义动画',
-                 'keywords': keywords,
-                 'description': animation_description,
-                 'complex': is_complex,
-                 'animation_class': 'animation-custom'
-             }
+            keywords = poster_generator.analyze_animation_description(animation_description)
+            is_complex = poster_generator.is_complex_description(animation_description)
             
-            # 根据描述类型设置具体的动画类名
-            if '波浪' in animation_description or 'wave' in animation_description.lower():
-                animation_info['animation_class'] = 'animation-wave'
-            elif '螺旋' in animation_description or 'spiral' in animation_description.lower():
-                animation_info['animation_class'] = 'animation-spiral'
-            elif '弹跳' in animation_description or 'bounce' in animation_description.lower():
-                animation_info['animation_class'] = 'animation-multi-bounce'
-            elif '旋转' in animation_description or 'rotate' in animation_description.lower():
-                animation_info['animation_class'] = 'animation-rotate3d'
-            elif is_complex:
-                animation_info['animation_class'] = 'animation-combined'
+            animation_info = {
+                'type': 'custom',
+                'name': custom_animation['name'],
+                'keywords': keywords,
+                'description': animation_description,
+                'complex': is_complex,
+                'animation_class': f'animation-{custom_animation["name"]}'
+            }
                 
             return jsonify({
                 'success': True,

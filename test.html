@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI动态海报生成器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 AI动态海报生成器</h1>
+            <p>描述你想要的动画效果，AI帮你实现！</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 聊天界面 -->
+            <div class="chat-section">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        👋 你好！请描述你想要的动画效果，比如："生日快乐的动画，有飘落的花瓣"
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <textarea 
+                        id="userInput" 
+                        placeholder="例如：创建一个科技感的粒子背景，文字缓缓出现..."
+                        rows="3"
+                    ></textarea>
+                    <button id="generateBtn">生成动画</button>
+                </div>
+            </div>
+
+            <!-- 动画展示区域 -->
+            <div class="animation-section">
+                <div class="animation-container">
+                    <canvas id="animationCanvas" width="600" height="400"></canvas>
+                </div>
+                <div class="animation-controls">
+                    <button id="playBtn">播放</button>
+                    <button id="stopBtn">停止</button>
+                    <button id="resetBtn">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

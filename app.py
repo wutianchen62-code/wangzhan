@@ -282,6 +282,7 @@ class PosterGenerator:
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
+            animation: {custom_animation['name']} {custom_animation['duration']} {custom_animation['timing']} infinite;
         }}
         
         .poster-content {{
@@ -551,14 +552,31 @@ class PosterGenerator:
         # 分析用户描述，提取关键信息
         keywords = self.analyze_animation_description(description)
         
-        # 根据关键词生成对应的动画代码
-        animation_code = self.generate_custom_animation(keywords)
-        
         # 如果检测到复杂描述，生成更高级的动画
         if self.is_complex_description(description):
-            animation_code = self.generate_advanced_animation(description, keywords)
-        
-        return animation_code
+            # 生成高级动画CSS代码
+            css_code = self.generate_advanced_animation(description, keywords)
+            
+            # 从CSS代码中提取动画名称
+            import re
+            name_match = re.search(r'@keyframes\s+(\w+)', css_code)
+            animation_name = name_match.group(1) if name_match else 'custom_advanced'
+            
+            # 提取动画参数
+            animation_match = re.search(r'animation:\s+(\w+)\s+(\d+s)\s+([^;]+)', css_code)
+            timing = animation_match.group(2) if animation_match else '2s'
+            easing = animation_match.group(3) if animation_match else 'ease'
+            
+            return {
+                'name': animation_name,
+                'css': css_code.strip(),
+                'duration': timing,
+                'timing': easing,
+                'keywords': keywords
+            }
+        else:
+            # 根据关键词生成对应的动画代码
+            return self.generate_custom_animation(keywords)
 
     def analyze_animation_description(self, description):
         """分析动画描述，提取关键特征"""
@@ -630,6 +648,8 @@ class PosterGenerator:
         return {
             'name': animation_name,
             'css': css_code.strip(),
+            'duration': timing,
+            'timing': easing,
             'keywords': keywords
         }
 

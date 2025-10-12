@@ -5,7 +5,7 @@ import os
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from app import poster_generator, app
+from app import poster_generator, app, generator
 
 # Vercel Serverless函数入口
 @app.route('/api/generate_poster', methods=['POST'])

@@ -123,7 +123,9 @@ class PosterGenerator {
     async generatePoster() {
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
+        const animationType = document.getElementById('animation-type').value;
         const animation = document.getElementById('animation').value;
+        const animationDescription = document.getElementById('animation-description').value;
         const color = document.getElementById('color').value;
 
         if (!title || !content) {
@@ -131,18 +133,61 @@ class PosterGenerator {
             return;
         }
 
+        // 如果是自定义动画类型，需要检查描述
+        if (animationType === 'custom' && !animationDescription.trim()) {
+            this.showMessage('请输入自定义动画描述', 'error');
+            return;
+        }
+
         this.showLoading();
 
         try {
-            // 模拟异步处理
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // 尝试调用后端API
+            const response = await fetch('/api/generate_poster', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: title,
+                    text: content,
+                    animation: animation,
+                    color_theme: color,
+                    animation_type: animationType,
+                    animation_description: animationDescription
+                })
+            });
             
-            const posterHtml = this.generateStaticPoster(title, content, animation, color);
-            this.displayGeneratedPoster(posterHtml);
-            this.showMessage('海报生成成功！', 'success');
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    this.displayGeneratedPoster(result.poster_html);
+                    let message = '海报生成成功！';
+                    if (result.animation_info) {
+                        message += ` 动画类型：${result.animation_info.type}`;
+                        if (result.animation_info.name) {
+                            message += `，名称：${result.animation_info.name}`;
+                        }
+                    }
+                    this.showMessage(message, 'success');
+                } else {
+                    throw new Error(result.error || '生成失败');
+                }
+            } else {
+                // 如果后端API不可用，使用本地生成
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const posterHtml = this.generateStaticPoster(title, content, animation, color);
+                this.displayGeneratedPoster(posterHtml);
+                this.showMessage('海报生成成功！（本地模式）', 'success');
+            }
             
         } catch (error) {
-            this.showMessage('生成失败：' + error.message, 'error');
+            console.error('生成失败:', error);
+            // 如果网络请求失败，使用本地生成
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const posterHtml = this.generateStaticPoster(title, content, animation, color);
+            this.displayGeneratedPoster(posterHtml);
+            this.showMessage('海报生成成功！（本地模式）', 'success');
         } finally {
             this.hideLoading();
         }

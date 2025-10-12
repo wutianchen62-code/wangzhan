@@ -584,7 +584,24 @@ poster_generator = PosterGenerator()
 
 @app.route('/')
 def index():
-    return open('index.html', 'r', encoding='utf-8').read()
+    """主页面"""
+    return render_template_string(open('index.html', encoding='utf-8').read())
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    """静态文件服务"""
+    import os
+    from flask import send_from_directory
+    
+    # 允许的文件类型
+    allowed_extensions = {'.css', '.js', '.html', '.png', '.jpg', '.jpeg', '.gif', '.ico'}
+    
+    # 检查文件是否存在且类型允许
+    if os.path.isfile(filename) and any(filename.endswith(ext) for ext in allowed_extensions):
+        return send_from_directory('.', filename)
+    
+    # 如果请求的是根目录下的文件，尝试直接返回
+    return send_from_directory('.', filename) if os.path.isfile(filename) else 'File not found', 404
 
 @app.route('/style.css')
 def style_css():

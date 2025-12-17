@@ -116,8 +116,24 @@ def index():
     """显示海报生成器主页"""
     if IS_VERCEL:
         # 在Vercel环境下，直接返回HTML内容
-        with open('templates/index.html', 'r', encoding='utf-8') as f:
-            return f.read()
+        try:
+            with open('templates/index.html', 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            # 如果文件不存在，返回简单的HTML
+            return """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>AI海报生成器</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <h1>AI海报生成器</h1>
+                <p>应用正在启动中...</p>
+            </body>
+            </html>
+            """
     else:
         return render_template('index.html')
 

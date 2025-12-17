@@ -138,7 +138,7 @@ def index():
         return render_template('index.html')
 
 # 生成海报API路由
-@app.route('/generate_poster', methods=['POST'])
+@app.route('/api/generate_poster', methods=['POST'])
 def generate_poster():
     """生成海报API"""
     try:

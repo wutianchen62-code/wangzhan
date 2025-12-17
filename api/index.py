@@ -1,4 +1,11 @@
+import sys
+import os
 import json
+
+# 添加项目根目录到Python路径
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+from coding_agent import app
 
 def handler(request, response):
     # 设置CORS头
@@ -31,64 +38,18 @@ def handler(request, response):
                 }).encode('utf-8')
                 return response
             
-            # 模拟海报生成（返回前端期望的格式）
-            poster_code = f'''
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI生成海报</title>
-    <style>
-        body {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            color: white;
-        }}
-        .poster {{
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }}
-        h1 {{
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }}
-        p {{
-            font-size: 1.2rem;
-            line-height: 1.6;
-        }}
-    </style>
-</head>
-<body>
-    <div class="poster">
-        <h1>🎨 AI海报生成器</h1>
-        <p>基于您的描述生成的海报预览</p>
-        <p style="margin-top: 20px; font-size: 1rem; opacity: 0.8;">
-            描述：{data.get('description', '')[:100]}...
-        </p>
-    </div>
-</body>
-</html>
-            '''
-            
-            response.status_code = 200
-            response.body = json.dumps({
-                'success': True,
-                'poster_code': poster_code,
-                'message': '海报生成成功'
-            }).encode('utf-8')
-            
+            # 使用Flask应用处理请求
+            with app.test_client() as client:
+                flask_response = client.post(
+                    '/api/generate_poster',
+                    json=data,
+                    headers={'Content-Type': 'application/json'}
+                )
+                
+                # 返回Flask响应
+                response.status_code = flask_response.status_code
+                response.body = flask_response.data
+                
         except json.JSONDecodeError:
             response.status_code = 400
             response.body = json.dumps({

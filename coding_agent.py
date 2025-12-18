@@ -172,5 +172,6 @@ def generate_poster():
             'error': str(e)
         })
 
-if __name__ == '__main__':
+# 只在本地开发时启动Flask服务器
+if __name__ == '__main__' and not IS_VERCEL:
     app.run(debug=True, host='0.0.0.0', port=5001)

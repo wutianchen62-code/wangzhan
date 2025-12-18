@@ -108,7 +108,7 @@ class PosterCodingAgent:
                     raise Exception(f"生成海报代码失败: {str(e)}")
 
 # 全局配置
-DEFAULT_API_URL = 'https://maas-api.ai-yuanjing.com/openapi/compatible-mode/v1/chat/completions'
+DEFAULT_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
 
 # 主页路由 - 显示前端界面
 @app.route('/')

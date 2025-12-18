@@ -21,6 +21,10 @@
       "dest": "/api/index.py"
     },
     {
+      "src": "/",
+      "dest": "/templates/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/templates/index.html"
     }

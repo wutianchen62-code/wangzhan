@@ -8,8 +8,8 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from coding_agent import PosterCodingAgent
 
-# Vercel Python函数需要导出一个app变量
-app = None
+# 从coding_agent.py导入默认API URL
+from coding_agent import DEFAULT_API_URL
 
 # 使用Vercel期望的函数格式
 def handler(event, context):
@@ -54,7 +54,7 @@ def handler(event, context):
             # 直接使用PosterCodingAgent生成海报
             agent = PosterCodingAgent(
                 api_key=data.get('api_key'),
-                api_url=data.get('api_url', 'https://maas-api.ai-yuanjing.com/openapi/compatible-mode/v1/chat/completions'),
+                api_url=data.get('api_url', DEFAULT_API_URL),
                 model=data.get('model', 'deepseek-v3_2')
             )
             

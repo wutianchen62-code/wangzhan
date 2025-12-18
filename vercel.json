@@ -3,7 +3,12 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.9",
+        "includeFiles": "coding_agent.py",
+        "maxDuration": 60
+      }
     },
     {
       "src": "templates/index.html",
@@ -28,12 +33,5 @@
       "src": "/(.*)",
       "dest": "/templates/index.html"
     }
-  ],
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.9",
-      "includeFiles": "coding_agent.py",
-      "maxDuration": 60
-    }
-  }
+  ]
 }

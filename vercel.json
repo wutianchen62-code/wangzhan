@@ -28,7 +28,8 @@
   "functions": {
     "api/index.py": {
       "runtime": "python3.9",
-      "includeFiles": "coding_agent.py"
+      "includeFiles": "coding_agent.py",
+      "maxDuration": 60
     }
   }
 }

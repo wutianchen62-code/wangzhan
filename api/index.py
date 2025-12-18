@@ -100,3 +100,8 @@ def handler(event, context):
                 'error': '接口不存在'
             })
         }
+
+# Vercel Python函数需要导出handler函数
+if __name__ == '__main__':
+    # 本地测试代码
+    pass

@@ -1,11 +1,12 @@
 import sys
 import os
 import json
+import requests
 
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from coding_agent import app
+from coding_agent import PosterCodingAgent
 
 def handler(request, response):
     # 设置CORS头
@@ -38,17 +39,22 @@ def handler(request, response):
                 }).encode('utf-8')
                 return response
             
-            # 使用Flask应用处理请求
-            with app.test_client() as client:
-                flask_response = client.post(
-                    '/api/generate_poster',
-                    json=data,
-                    headers={'Content-Type': 'application/json'}
-                )
-                
-                # 返回Flask响应
-                response.status_code = flask_response.status_code
-                response.body = flask_response.data
+            # 直接使用PosterCodingAgent生成海报
+            agent = PosterCodingAgent(
+                api_key=data.get('api_key'),
+                api_url=data.get('api_url', 'https://maas-api.ai-yuanjing.com/openapi/compatible-mode/v1/chat/completions'),
+                model=data.get('model', 'deepseek-v3_2')
+            )
+            
+            # 生成海报代码
+            poster_code = agent.generate_poster_code(data.get('description'))
+            
+            response.status_code = 200
+            response.body = json.dumps({
+                'success': True,
+                'poster_code': poster_code,
+                'message': '海报生成成功'
+            }).encode('utf-8')
                 
         except json.JSONDecodeError:
             response.status_code = 400

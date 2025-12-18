@@ -8,9 +8,9 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from coding_agent import PosterCodingAgent
 
-def handler(request, response):
+def handler(request):
     # 设置CORS头
-    response.headers = {
+    headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -19,9 +19,11 @@ def handler(request, response):
     
     # 处理预检请求
     if request.method == 'OPTIONS':
-        response.status_code = 200
-        response.body = json.dumps({'success': True}).encode('utf-8')
-        return response
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': json.dumps({'success': True})
+        }
     
     # 只处理 /api/generate_poster 路径的POST请求
     if request.path == '/api/generate_poster' and request.method == 'POST':
@@ -32,12 +34,14 @@ def handler(request, response):
             
             # 验证必需字段
             if not data.get('api_key') or not data.get('description'):
-                response.status_code = 400
-                response.body = json.dumps({
-                    'success': False,
-                    'error': '缺少必需参数：api_key 或 description'
-                }).encode('utf-8')
-                return response
+                return {
+                    'statusCode': 400,
+                    'headers': headers,
+                    'body': json.dumps({
+                        'success': False,
+                        'error': '缺少必需参数：api_key 或 description'
+                    })
+                }
             
             # 直接使用PosterCodingAgent生成海报
             agent = PosterCodingAgent(
@@ -49,32 +53,42 @@ def handler(request, response):
             # 生成海报代码
             poster_code = agent.generate_poster_code(data.get('description'))
             
-            response.status_code = 200
-            response.body = json.dumps({
-                'success': True,
-                'poster_code': poster_code,
-                'message': '海报生成成功'
-            }).encode('utf-8')
+            return {
+                'statusCode': 200,
+                'headers': headers,
+                'body': json.dumps({
+                    'success': True,
+                    'poster_code': poster_code,
+                    'message': '海报生成成功'
+                })
+            }
                 
         except json.JSONDecodeError:
-            response.status_code = 400
-            response.body = json.dumps({
-                'success': False,
-                'error': '无效的JSON格式'
-            }).encode('utf-8')
+            return {
+                'statusCode': 400,
+                'headers': headers,
+                'body': json.dumps({
+                    'success': False,
+                    'error': '无效的JSON格式'
+                })
+            }
         except Exception as e:
-            response.status_code = 500
-            response.body = json.dumps({
-                'success': False,
-                'error': f'服务器错误: {str(e)}'
-            }).encode('utf-8')
+            return {
+                'statusCode': 500,
+                'headers': headers,
+                'body': json.dumps({
+                    'success': False,
+                    'error': f'服务器错误: {str(e)}'
+                })
+            }
     
     else:
         # 对于其他路径，返回404
-        response.status_code = 404
-        response.body = json.dumps({
-            'success': False,
-            'error': '接口不存在'
-        }).encode('utf-8')
-    
-    return response
+        return {
+            'statusCode': 404,
+            'headers': headers,
+            'body': json.dumps({
+                'success': False,
+                'error': '接口不存在'
+            })
+        }

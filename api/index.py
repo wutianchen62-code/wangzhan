@@ -8,7 +8,16 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from coding_agent import PosterCodingAgent
 
-def handler(request):
+# Vercel Python函数需要导出一个app变量
+app = None
+
+# 使用Vercel期望的函数格式
+def handler(event, context):
+    # 解析事件数据
+    path = event.get('path', '')
+    method = event.get('httpMethod', '')
+    body = event.get('body', '{}')
+    
     # 设置CORS头
     headers = {
         'Access-Control-Allow-Origin': '*',
@@ -18,7 +27,7 @@ def handler(request):
     }
     
     # 处理预检请求
-    if request.method == 'OPTIONS':
+    if method == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': headers,
@@ -26,10 +35,9 @@ def handler(request):
         }
     
     # 只处理 /api/generate_poster 路径的POST请求
-    if request.path == '/api/generate_poster' and request.method == 'POST':
+    if path == '/api/generate_poster' and method == 'POST':
         try:
             # 解析请求体
-            body = request.body.decode('utf-8') if request.body else '{}'
             data = json.loads(body)
             
             # 验证必需字段

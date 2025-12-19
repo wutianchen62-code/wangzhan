@@ -5,6 +5,8 @@ import requests
 # api/index.py
 from flask import Flask, jsonify
 
+print(f"Python version: {sys.version}", file=sys.stderr)
+print(f"Flask import successful: {__name__}", file=sys.stderr)
 # 创建 Flask 应用实例
 app = Flask(__name__)
 # 添加项目根目录到Python路径

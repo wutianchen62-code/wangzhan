@@ -1,29 +1,22 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.9",
-      "includeFiles": "coding_agent.py",
-      "maxDuration": 60
-    }
-  },
-  "routes": [
+  "builds": [
     {
-      "src": "/api/generate_poster",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "/api/index.py"
-    },
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": { 
+        "runtime": "python3.9" 
+      }
+    }
+  ],
+  "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
     },
     {
-      "src": "/",
-      "dest": "/templates/index.html"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/templates/index.html"
+      "dest": "/api/index.py"
     }
   ]
 }

@@ -2,21 +2,30 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "coding_agent.py",
       "use": "@vercel/python",
-      "config": { 
-        "runtime": "python3.9" 
+      "config": {
+        "runtime": "python3.9",
+        "maxDuration": 60
       }
+    },
+    {
+      "src": "templates/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/coding_agent.py"
+    },
+    {
+      "src": "/",
+      "dest": "/templates/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/templates/$1"
     }
   ]
 }
